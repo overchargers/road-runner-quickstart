@@ -4,6 +4,10 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.influxdb:influxdb-java:2.5'
+}
+
+dependencies {
     implementation 'org.firstinspires.ftc:Inspection:10.1.1'
     implementation 'org.firstinspires.ftc:Blocks:10.1.1'
     implementation 'org.firstinspires.ftc:RobotCore:10.1.1'
