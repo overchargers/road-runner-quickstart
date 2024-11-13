@@ -45,6 +45,7 @@ import org.firstinspires.ftc.teamcode.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.messages.MecanumLocalizerInputsMessage;
 import org.firstinspires.ftc.teamcode.messages.PoseMessage;
+import org.firstinspires.ftc.teamcode.support.InfluxDbLogger;
 
 import java.lang.Math;
 import java.util.Arrays;
@@ -121,6 +122,8 @@ public final class MecanumDrive {
     private final DownsampledWriter targetPoseWriter = new DownsampledWriter("TARGET_POSE", 50_000_000);
     private final DownsampledWriter driveCommandWriter = new DownsampledWriter("DRIVE_COMMAND", 50_000_000);
     private final DownsampledWriter mecanumCommandWriter = new DownsampledWriter("MECANUM_COMMAND", 50_000_000);
+
+    public final InfluxDbLogger influxDbLogger;
 
     public class DriveLocalizer implements Localizer {
         public final Encoder leftFront, leftBack, rightBack, rightFront;
@@ -208,6 +211,8 @@ public final class MecanumDrive {
 
     public MecanumDrive(HardwareMap hardwareMap, Pose2d pose) {
         this.pose = pose;
+
+        influxDbLogger = new InfluxDbLogger(hardwareMap);
 
         LynxFirmware.throwIfModulesAreOutdated(hardwareMap);
 
@@ -335,6 +340,15 @@ public final class MecanumDrive {
             p.put("xError", error.position.x);
             p.put("yError", error.position.y);
             p.put("headingError (deg)", Math.toDegrees(error.heading.toDouble()));
+
+            influxDbLogger.add("x", pose.position.x);
+            influxDbLogger.add("y", pose.position.y);
+            influxDbLogger.add("heading", Math.toDegrees(pose.heading.toDouble()));
+            influxDbLogger.add("xError", error.position.x);
+            influxDbLogger.add("yError", error.position.y);
+            influxDbLogger.add("headingError", Math.toDegrees(error.heading.toDouble()));
+
+            influxDbLogger.write();
 
             // only draw when active; only one drive action should be active at a time
             Canvas c = p.fieldOverlay();
