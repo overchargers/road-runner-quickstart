@@ -1,10 +1,117 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import static java.lang.Thread.sleep;
+
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Constants;
 
 public class LiftArm {
+    public boolean lift_arm_was_intaking = false;
+    public DcMotor liftMotor;
+    public Servo liftswingservo;
+    private CRServo liftspinservo;
+    private Gamepad gamepad1;
+    private Telemetry telemetry;
 
-    public LiftArm(HardwareMap hardwareMap)
+
+    public LiftArm(HardwareMap hardwareMap, Gamepad gp, Telemetry telem)
     {
+        liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
+        liftswingservo = hardwareMap.get(Servo.class, "liftswingservo");
+        liftspinservo = hardwareMap.get(CRServo.class, "liftspinservo");
+        gamepad1=gp;
+        telemetry=telem;
     }
+
+    public void prevent_lift_motor_overheating() throws InterruptedException {
+        sleep(100);
+        if (((DcMotorEx) liftMotor).getVelocity() == 0 && liftMotor.getTargetPosition() > 100) {
+            liftMotor.setPower(0.1);
+        }
+        if (((DcMotorEx) liftMotor).getVelocity() == 0 && liftMotor.getTargetPosition() < 100) {
+            liftMotor.setPower(0);
+        }
+    }
+
+    private void lift_arm_move(int target, double power) {
+        liftMotor.setTargetPosition((int) target);
+        liftMotor.setPower(power);
+    }
+
+    public void lift_arm_to_high_basket() throws InterruptedException {
+        int target = 3000;
+        double power = 1;
+        lift_arm_move((int) target, power);
+        prevent_lift_motor_overheating();
+    }
+    public void init_lift_arm() {
+        liftMotor.setTargetPosition(0);
+        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMotor.setDirection(DcMotor.Direction.REVERSE);
+        liftswingservo.setPosition(Constants.lift_arm_swing_servo_tuck);
+    }
+    public void lift_arm_to_low_basket() throws InterruptedException {
+        double power = 1;
+        int target = 2300;
+        lift_arm_move((int) target, power);
+        prevent_lift_motor_overheating();
+    }
+    public void lift_arm_to_zero() throws InterruptedException {
+        double power = 1;
+        int target = 0;
+        lift_arm_move((int) target, power);
+        sleep(100);
+    }
+    public void lift_arm_outtake() {
+        int count = 0;
+        while (gamepad1.left_bumper) {
+            liftspinservo.setPower(-0.5);
+            count = 1 + count;
+            telemetry.addData("count", count);
+            telemetry.update();
+            drive_motor();
+        }
+        liftspinservo.setPower(0);
+        lift_arm_was_intaking = false;
+    }
+    public void lift_arm_intake() {
+        int count = 0;
+        liftspinservo.setDirection(CRServo.Direction.FORWARD);
+        while (gamepad1.left_bumper) {
+            liftspinservo.setPower(0.4);
+            count = 1 + count;
+            telemetry.addData("count", count);
+            telemetry.update();
+            drive_motor();
+        }
+        liftspinservo.setPower(0.1);
+        lift_arm_was_intaking = true;
+    }
+    public void lift_arm_to_high_rung() throws InterruptedException {
+        double power = 1;
+        int target = 1500;
+        lift_arm_move((int) target, power);
+        sleep(100);
+    }
+    public void lift_arm_to_below_high_rung() throws InterruptedException {
+        double power = 1;
+        int target = 1000;
+        lift_arm_move((int) target, power);
+        sleep(100);
+    }
+    public void lift_arm_swing_to_low_basket_and_zero() {
+        liftswingservo.setPosition(Constants.low_basket);
+    }
+    public void lift_arm_swing_to_high_basket() {
+        liftswingservo.setPosition(Constants.high_basket);
+    }
+
 }
