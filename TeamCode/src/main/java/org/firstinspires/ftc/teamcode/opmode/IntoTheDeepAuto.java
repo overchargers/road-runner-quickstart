@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
+import static org.firstinspires.ftc.teamcode.Constants.drive_low_power;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -11,25 +13,36 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.components.Drivetrain;
 import org.firstinspires.ftc.teamcode.components.LiftArm;
 import org.firstinspires.ftc.teamcode.components.PickArm;
+import org.firstinspires.ftc.teamcode.components.Status;
 
 @Config
 @Autonomous(name = "IntoTheDeepAuto", group = "Into The Deep")
 public class IntoTheDeepAuto extends LinearOpMode {
 
     final private ElapsedTime runtime = new ElapsedTime();
+    LiftArm liftArm;
+    PickArm pickArm;
+    Drivetrain driveTrain;
+    MecanumDrive drive;
+    Status status;
 
     @Override
-    public void runOpMode()
-    {
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, Math.toRadians(0)));
-        PickArm pickarm = new PickArm(hardwareMap);
-        LiftArm liftarm = new LiftArm(hardwareMap);
+    public void runOpMode() throws InterruptedException {
+        drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+        driveTrain = new Drivetrain(hardwareMap, gamepad1, drive);
+        pickArm = new PickArm(hardwareMap,gamepad1,telemetry, driveTrain);
+        liftArm = new LiftArm(hardwareMap,gamepad1,telemetry, driveTrain );
+        status = new Status(telemetry, driveTrain, drive, pickArm, liftArm);
 
         //------------------------------------------------------------------------------------------
         // INITIALIZE ROBOT
-
+        pickArm.init_pick_arm();
+        liftArm.init_lift_arm();
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
         // Actions that need to happen on init; for instance, a claw tightening
 //        Actions.runBlocking(claw.closeClaw());
 
@@ -40,8 +53,6 @@ public class IntoTheDeepAuto extends LinearOpMode {
 
         //------------------------------------------------------------------------------------------
 
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -51,93 +62,159 @@ public class IntoTheDeepAuto extends LinearOpMode {
         {
             // @formatter:off
             Action trajectoryAction1 = drive.actionBuilder(drive.pose)
-                    .lineToYSplineHeading(33, Math.toRadians(0))
-                    .waitSeconds(2)
-                    .setTangent(Math.toRadians(90))
-                    .lineToY(48)
-                    .setTangent(Math.toRadians(0))
-                    .lineToX(32)
-                    .strafeTo(new Vector2d(44.5,30))
-                    .turn(Math.toRadians(180))
-                    .lineToX(47.5)
-                    .waitSeconds(3)
+                    .lineToX(-16)
                     .build();
-            Action trajectoryAction2 = drive.actionBuilder(drive.pose)
-                    .lineToY(37)
-                    .setTangent(Math.toRadians(0))
-                    .lineToX(18)
-                    .waitSeconds(3)
-                    .setTangent(Math.toRadians(0))
-                    .lineToXSplineHeading(46, Math.toRadians(180))
-                    .waitSeconds(3)
-                    .build();
-            Action trajectoryAction3 = drive.actionBuilder(drive.pose)
-                    .lineToYSplineHeading(33, Math.toRadians(180))
-                    .waitSeconds(2)
-                    .strafeTo(new Vector2d(46, 30))
-                    .waitSeconds(3)
-                    .build();
-            // @formatter:on
 
             // @formatter:off
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction1,
-                            trajectoryAction2,
-//                        lift.liftUp(),
-//                        claw.openClaw(),
-//                        lift.liftDown()
-                            trajectoryAction3
+                            liftArm.lift_arm_to_high_basket_action()
                     )
             );
             // @formatter:on
 
-        }
-        else if (startPosition == SPECIMEN_SCORING)
-        {
-            // @formatter:off
-            Action trajectoryAction1 = drive.actionBuilder(drive.pose)
-                    .lineToYSplineHeading(33, Math.toRadians(0))
-                    .waitSeconds(2)
-                    .setTangent(Math.toRadians(90))
-                    .lineToY(48)
-                    .setTangent(Math.toRadians(0))
-                    .lineToX(32)
-                    .strafeTo(new Vector2d(44.5,30))
-                    .turn(Math.toRadians(180))
-                    .lineToX(47.5)
-                    .waitSeconds(3)
-                    .build();
             Action trajectoryAction2 = drive.actionBuilder(drive.pose)
-                    .lineToY(37)
-                    .setTangent(Math.toRadians(0))
-                    .lineToX(18)
-                    .waitSeconds(3)
-                    .setTangent(Math.toRadians(0))
-                    .lineToXSplineHeading(46, Math.toRadians(180))
-                    .waitSeconds(3)
-                    .build();
-            Action trajectoryAction3 = drive.actionBuilder(drive.pose)
-                    .lineToYSplineHeading(33, Math.toRadians(180))
                     .waitSeconds(2)
-                    .strafeTo(new Vector2d(46, 30))
-                    .waitSeconds(3)
+                    .lineToX(-22)
+                    .waitSeconds(1)
                     .build();
-            // @formatter:on
 
             // @formatter:off
             Actions.runBlocking(
                     new SequentialAction(
-                            trajectoryAction1,
                             trajectoryAction2,
+                            liftArm.lify_arm_outtake_action()
+                    )
+            );
+            Action trajectoryAction3 = drive.actionBuilder(drive.pose)
+                    .lineToX(-2)
+                    .build();
+
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction3,
+                            liftArm.lift_arm_to_zero_action()
+                    )
+            );
+            Action trajectoryAction4 = drive.actionBuilder(drive.pose)
+                    .strafeTo(new Vector2d(-5,37))
+                    .build();
+
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction4,
+                            liftArm.lify_arm_intake_action()
+                    )
+            );
+
+            Action trajectoryAction5 = drive.actionBuilder(drive.pose)
+                    .lineToX(-13)
+                    .build();
+
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction5
+                    )
+            );
+
+
+
+
+
+            // @formatter:on
+
+
+
+//            Action trajectoryAction2 = drive.actionBuilder(drive.pose)
+//                    .lineToY(37)
+//                    .setTangent(Math.toRadians(0))
+//                    .lineToX(18)
+//                    .waitSeconds(3)
+//                    .setTangent(Math.toRadians(0))
+//                    .lineToXSplineHeading(46, Math.toRadians(180))
+//                    .waitSeconds(3)
+//                    .build();
+//            Action trajectoryAction3 = drive.actionBuilder(drive.pose)
+//                    .lineToYSplineHeading(33, Math.toRadians(180))
+//                    .waitSeconds(2)
+//                    .strafeTo(new Vector2d(46, 30))
+//                    .waitSeconds(3)
+//                    .build();
+            // @formatter:on
+
+            // @formatter:off
+//            Actions.runBlocking(
+//                    new SequentialAction(
+//                            trajectoryAction1
+//                            liftArm.lift_arm_to_high_basket_action(),
+//                            trajectoryAction2
+//                            liftArm.lify_arm_outtake_action()
+
+//                            trajectoryAction2,
 //                        lift.liftUp(),
 //                        claw.openClaw(),
 //                        lift.liftDown()
-                            trajectoryAction3
-                    )
-            );
+//                            trajectoryAction3
+//                    )
+//            );
             // @formatter:on
 
+            Action trajectoryActionEnd = drive.actionBuilder(drive.pose)
+                    .waitSeconds(3)
+                    .build();
+
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryActionEnd
+                    )
+            );
         }
+//        else if (startPosition == SPECIMEN_SCORING)
+//        {
+//            // @formatter:off
+//            Action trajectoryAction1 = drive.actionBuilder(drive.pose)
+//                    .lineToYSplineHeading(33, Math.toRadians(0))
+//                    .waitSeconds(2)
+//                    .setTangent(Math.toRadians(90))
+//                    .lineToY(48)
+//                    .setTangent(Math.toRadians(0))
+//                    .lineToX(32)
+//                    .strafeTo(new Vector2d(44.5,30))
+//                    .turn(Math.toRadians(180))
+//                    .lineToX(47.5)
+//                    .waitSeconds(3)
+//                    .build();
+//            Action trajectoryAction2 = drive.actionBuilder(drive.pose)
+//                    .lineToY(37)
+//                    .setTangent(Math.toRadians(0))
+//                    .lineToX(18)
+//                    .waitSeconds(3)
+//                    .setTangent(Math.toRadians(0))
+//                    .lineToXSplineHeading(46, Math.toRadians(180))
+//                    .waitSeconds(3)
+//                    .build();
+//            Action trajectoryAction3 = drive.actionBuilder(drive.pose)
+//                    .lineToYSplineHeading(33, Math.toRadians(180))
+//                    .waitSeconds(2)
+//                    .strafeTo(new Vector2d(46, 30))
+//                    .waitSeconds(3)
+//                    .build();
+//            // @formatter:on
+//
+//            // @formatter:off
+//            Actions.runBlocking(
+//                    new SequentialAction(
+//                            trajectoryAction1,
+//                            trajectoryAction2,
+////                        lift.liftUp(),
+////                        claw.openClaw(),
+////                        lift.liftDown()
+//                            trajectoryAction3
+//                    )
+//            );
+            // @formatter:on
+
+//        }
     }
 }
