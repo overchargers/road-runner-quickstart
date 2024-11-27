@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
@@ -29,6 +31,7 @@ public class Status {
         telemetry.addData("PickMotor Encoder", pickArm.pickMotor.getCurrentPosition());
         telemetry.addData("LiftMotor Power", liftArm.liftMotor.getPower());
         telemetry.addData("LiftMotor Encoder", liftArm.liftMotor.getCurrentPosition());
+        telemetry.addData("LiftMotor Velocity", ((DcMotorEx) liftArm.liftMotor).getVelocity());
         telemetry.addData("PickSwing Position", Constants.pick_arm_swing_servo_backwards);
         telemetry.addData("LiftSwing Position", Constants.lift_arm_swing_servo_tuck);
         telemetry.addData("MotorDirection Reverse", drivetrain.direction_is_reverse);
