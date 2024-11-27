@@ -33,9 +33,9 @@ public class IntoTheDeepTele extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
-        liftArm = new LiftArm(hardwareMap,gamepad1,telemetry);
-        pickArm = new PickArm(hardwareMap,gamepad1,telemetry);
         driveTrain = new Drivetrain(hardwareMap, gamepad1, drive);
+        pickArm = new PickArm(hardwareMap,gamepad1,telemetry, driveTrain);
+        liftArm = new LiftArm(hardwareMap,gamepad1,telemetry, driveTrain );
         status = new Status(telemetry, driveTrain, drive, pickArm, liftArm);
 
         // Initialize
@@ -47,6 +47,7 @@ public class IntoTheDeepTele extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         if (opModeIsActive()) {
+            // Main loop
             while (opModeIsActive()) {
                 status.show_status();
                 if (gamepad1.dpad_right) {
@@ -110,20 +111,21 @@ public class IntoTheDeepTele extends LinearOpMode {
                     driveTrain.reverse_drive_direction();
                 }
                 driveTrain.drive_motor();
+                pickArm.prevent_pick_motor_overheating();
+                liftArm.prevent_lift_motor_overheating();
             }
         }
         runtime.reset();
 
-        // Main loop
-        while (opModeIsActive())
-        {
-
-            // Display telemetry on the FTC dashboard
-            TelemetryPacket packet = new TelemetryPacket();
-            packet.fieldOverlay().setStroke("#3F51B5");
-            Drawing.drawRobot(packet.fieldOverlay(), drive.pose);
-            FtcDashboard.getInstance().sendTelemetryPacket(packet);
-        }
+//        while (opModeIsActive())
+//        {
+//
+//            // Display telemetry on the FTC dashboard
+//            TelemetryPacket packet = new TelemetryPacket();
+//            packet.fieldOverlay().setStroke("#3F51B5");
+//            Drawing.drawRobot(packet.fieldOverlay(), drive.pose);
+//            FtcDashboard.getInstance().sendTelemetryPacket(packet);
+//        }
 
     }
 }
