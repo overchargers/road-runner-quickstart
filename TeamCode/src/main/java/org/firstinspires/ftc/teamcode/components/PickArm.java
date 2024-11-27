@@ -21,17 +21,20 @@ public class PickArm {
     private Gamepad gamepad1;
     private Telemetry telemetry;
 
-    public PickArm(HardwareMap hardwareMap, Gamepad gp, Telemetry telem)
+    private Drivetrain drivetrain;
+
+
+    public PickArm(HardwareMap hardwareMap, Gamepad gp, Telemetry telem, Drivetrain drivetrain)
     {
         pickswingservo = hardwareMap.get(Servo.class, "pickswingservo");
         pickspinservo = hardwareMap.get(CRServo.class, "pickspinservo");
         pickMotor = hardwareMap.get(DcMotor.class, "pickMotor");
         gamepad1=gp;
         telemetry=telem;
+        this.drivetrain = drivetrain;
     }
 
-    public void prevent_lift_motor_overheating() throws InterruptedException {
-        sleep(100);
+    public void prevent_pick_motor_overheating() throws InterruptedException {
         if (((DcMotorEx) pickMotor).getVelocity() == 0) {
             pickMotor.setPower(0);
         }
@@ -56,7 +59,7 @@ public class PickArm {
         power = 1;
         pick_arm_move((int) target, power);
         // Extend Arm, Wait (Sleep), then Extend Swing Servo.
-        prevent_lift_motor_overheating();
+        sleep(100);
     }
     public void pick_arm_retract() throws InterruptedException {
         int target;
@@ -64,7 +67,8 @@ public class PickArm {
         target = 0;
         power = 1;
         pick_arm_move((int) target, power);
-        prevent_lift_motor_overheating();
+        // Extend Arm, Wait (Sleep), then Extend Swing Servo.
+        sleep(100);
     }
     public void pick_arm_outtake() {
         boolean pick_arm_was_intaking;
@@ -74,7 +78,7 @@ public class PickArm {
             count = 1 + count;
             telemetry.addData("PickArm Outtake", count);
             telemetry.update();
-            drive_motor();
+            drivetrain.drive_motor();
         }
         pickspinservo.setPower(0);
         pick_arm_was_intaking = false;
@@ -89,7 +93,7 @@ public class PickArm {
             count = 1 + count;
             telemetry.addData("PickArm Intake", count);
             telemetry.update();
-            drive_motor();
+            drivetrain.drive_motor();
         }
         pickspinservo.setPower(0.1);
         pick_arm_was_intaking = true;
