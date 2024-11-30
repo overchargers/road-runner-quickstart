@@ -9,4 +9,7 @@ public final class Constants {
     public static final double lift_arm_swing_servo_tuck = 0.32;
     public static final double pick_arm_swing_servo_tuck = 0.3;
     public static final double pick_arm_swing_servo_backwards = 0.6;
+    public static final double battering_ram_is_out = 0.37;
+    public static final double battering_ram_is_in = 0.73;
+
 }
