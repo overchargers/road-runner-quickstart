@@ -26,14 +26,13 @@ public class LiftArm {
 
     private Drivetrain drivetrain;
 
-    public LiftArm(HardwareMap hardwareMap, Gamepad gp, Telemetry telem, Drivetrain drivetrain)
-    {
+    public LiftArm(HardwareMap hardwareMap, Gamepad gp, Telemetry telem, Drivetrain drivetrain) {
         liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
         liftswingservo = hardwareMap.get(Servo.class, "liftswingservo");
         liftspinservo = hardwareMap.get(CRServo.class, "liftspinservo");
-        gamepad1=gp;
-        telemetry=telem;
-        this.drivetrain=drivetrain;
+        gamepad1 = gp;
+        telemetry = telem;
+        this.drivetrain = drivetrain;
     }
 
     public void prevent_lift_motor_overheating() throws InterruptedException {
@@ -56,6 +55,7 @@ public class LiftArm {
         lift_arm_move((int) target, power);
         sleep(100);
     }
+
     public void init_lift_arm() {
         liftMotor.setTargetPosition(0);
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -63,18 +63,21 @@ public class LiftArm {
         liftMotor.setDirection(DcMotor.Direction.REVERSE);
         liftswingservo.setPosition(Constants.lift_arm_swing_servo_tuck);
     }
+
     public void lift_arm_to_low_basket() throws InterruptedException {
         double power = 1;
         int target = 2300;
         lift_arm_move((int) target, power);
         sleep(100);
     }
+
     public void lift_arm_to_zero() throws InterruptedException {
         double power = 1;
         int target = 0;
         lift_arm_move((int) target, power);
         sleep(100);
     }
+
     public void lift_arm_outtake() {
         int count = 0;
         while (gamepad1.left_bumper) {
@@ -87,6 +90,7 @@ public class LiftArm {
         liftspinservo.setPower(0);
         lift_arm_was_intaking = false;
     }
+
     public void lift_arm_intake() {
         int count = 0;
         liftspinservo.setDirection(CRServo.Direction.FORWARD);
@@ -100,24 +104,29 @@ public class LiftArm {
         liftspinservo.setPower(0.1);
         lift_arm_was_intaking = true;
     }
+
     public void lift_arm_to_high_rung() throws InterruptedException {
         double power = 1;
         int target = 1500;
         lift_arm_move((int) target, power);
         sleep(100);
     }
+
     public void lift_arm_to_below_high_rung() throws InterruptedException {
         double power = 1;
         int target = 1000;
         lift_arm_move((int) target, power);
         sleep(100);
     }
+
     public void lift_arm_swing_to_low_basket_and_zero() {
         liftswingservo.setPosition(Constants.low_basket);
     }
+
     public void lift_arm_swing_to_high_basket() {
         liftswingservo.setPosition(Constants.high_basket);
     }
+
     // lift arm to high basket
     public class LiftArmToHighBasket implements Action {
         @Override
@@ -132,10 +141,10 @@ public class LiftArm {
         }
     }
 
-    public Action lift_arm_to_high_basket_action()
-    {
+    public Action lift_arm_to_high_basket_action() {
         return new LiftArmToHighBasket();
     }
+
     // lift arm to zero
     public class LiftArmToZero implements Action {
         @Override
@@ -150,10 +159,10 @@ public class LiftArm {
         }
     }
 
-    public Action lift_arm_to_zero_action()
-    {
+    public Action lift_arm_to_zero_action() {
         return new LiftArmToZero();
     }
+
     // intake
     public class LiftArmIntake implements Action {
         @Override
@@ -168,17 +177,17 @@ public class LiftArm {
         }
     }
 
-    public Action lify_arm_intake_action()
-    {
+    public Action lify_arm_intake_action() {
         return new LiftArmIntake();
     }
+
     // outtake
     public class LiftArmOuttake implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             liftspinservo.setPower(-0.5);
             try {
-                sleep(2000);
+                sleep(750);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -186,9 +195,42 @@ public class LiftArm {
             return false;
         }
     }
-    public Action lify_arm_outtake_action()
-    {
+    public Action lift_arm_outtake_action() {
         return new LiftArmOuttake();
+    }
+
+    // high rung
+    public class HighRung implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            try {
+                lift_arm_to_high_rung();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return false;
+        }
+    }
+
+    public Action high_rung_action() {
+        return new HighRung();
+    }
+
+    // below high rung
+    public class LowRung implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            try {
+                lift_arm_to_below_high_rung();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return false;
+        }
+    }
+
+    public Action low_rung_action() {
+        return new LowRung();
     }
 
 }
