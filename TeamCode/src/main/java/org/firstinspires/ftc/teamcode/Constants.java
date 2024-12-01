@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 public final class Constants {
+    public static final String SAMPLE_SCORING = "SAMPLE-SCORING";
+    public static final String SPECIMEN_SCORING = "SPECIMEN-SCORING";
     public static final double backward_drive_power = 0.2;
     public static final double high_basket = 0.5;
     public static final double low_basket = 0.77;
