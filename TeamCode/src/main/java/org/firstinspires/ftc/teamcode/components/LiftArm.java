@@ -114,7 +114,7 @@ public class LiftArm {
 
     public void lift_arm_to_below_high_rung() throws InterruptedException {
         double power = 1;
-        int target = 1000;
+        int target = 875;
         lift_arm_move((int) target, power);
         sleep(100);
     }
@@ -147,11 +147,19 @@ public class LiftArm {
 
     // lift arm to zero
     public class LiftArmToZero implements Action {
+        String startingPosition;
+        public LiftArmToZero(String startingPosition)
+        {
+            this.startingPosition = startingPosition;
+        }
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             try {
                 lift_arm_to_zero();
-                lift_arm_swing_to_low_basket_and_zero();
+                if (startingPosition.equals(Constants.SAMPLE_SCORING))
+                {
+                    lift_arm_swing_to_low_basket_and_zero();
+                }
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -159,8 +167,8 @@ public class LiftArm {
         }
     }
 
-    public Action lift_arm_to_zero_action() {
-        return new LiftArmToZero();
+    public Action lift_arm_to_zero_action(String startingPosition) {
+        return new LiftArmToZero(startingPosition);
     }
 
     // intake
