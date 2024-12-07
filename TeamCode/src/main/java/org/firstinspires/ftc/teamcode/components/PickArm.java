@@ -102,7 +102,7 @@ public class PickArm {
         pickswingservo.setPosition(pick_arm_swing_servo_backwards);
     }
     public void pick_arm_swing_forward() {
-        pickswingservo.setPosition(0.83);
+        pickswingservo.setPosition(0.77);
     }
 
 }
