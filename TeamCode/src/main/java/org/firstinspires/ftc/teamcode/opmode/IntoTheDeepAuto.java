@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.opmode;
 
 import static org.firstinspires.ftc.teamcode.Constants.battering_ram_is_out;
 import static org.firstinspires.ftc.teamcode.Constants.drive_low_power;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -19,7 +18,6 @@ import org.firstinspires.ftc.teamcode.components.Drivetrain;
 import org.firstinspires.ftc.teamcode.components.LiftArm;
 import org.firstinspires.ftc.teamcode.components.PickArm;
 import org.firstinspires.ftc.teamcode.components.Status;
-
 @Config
 @Autonomous(name = "IntoTheDeepAuto", group = "Into The Deep")
 public class IntoTheDeepAuto extends LinearOpMode {
@@ -78,60 +76,57 @@ public class IntoTheDeepAuto extends LinearOpMode {
 
         if (startPosition.equals(Constants.SAMPLE_SCORING))
         {
-            // @formatter:off
-            Action trajectoryAction1 = drive.actionBuilder(drive.pose)
+            //Moves forward and raises liftarm for first sample
+            Action trajectoryAction1 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
                     .lineToX(-16)
                     .build();
-
-            // @formatter:off
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction1,
                             liftArm.lift_arm_to_high_basket_action()
                     )
             );
-            // @formatter:on
 
-            Action trajectoryAction2 = drive.actionBuilder(drive.pose)
+            // Move forward till over the basket then outtakes sample into basket
+            Action trajectoryAction2 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
                     .waitSeconds(1.25)
-                    .lineToX(-22)
+                    .lineToX(-23.5)
                     .waitSeconds(1)
                     .build();
-
-            // @formatter:off
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction2,
                             liftArm.lift_arm_outtake_action()
                     )
             );
-            Action trajectoryAction3 = drive.actionBuilder(drive.pose)
+
+            //When arm is up, moves back and lowers
+            Action trajectoryAction3 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
                     .lineToX(-2)
                     .build();
-
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction3,
                             liftArm.lift_arm_to_zero_action(startPosition)
                     )
             );
-            Action trajectoryAction4 = drive.actionBuilder(drive.pose)
-                    .strafeTo(new Vector2d(-5,40))
-                    .build();
 
+            //Strafes to second sample then starts intaking
+            Action trajectoryAction4 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
+                    .strafeTo(new Vector2d(-5,41))
+                    .build();
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction4,
                             liftArm.lify_arm_intake_action()
                     )
             );
-
-            Action trajectoryAction5 = drive.actionBuilder(drive.pose)
+            //Moves forward into sample then strafes back to starting position and lifts basket
+            Action trajectoryAction5 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
                     .lineToX(-12)
                     .waitSeconds(.5)
-                    .strafeTo(new Vector2d(-12,-2))
+                    .strafeTo(new Vector2d(-12,-3))
                     .build();
-
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction5,
@@ -139,52 +134,91 @@ public class IntoTheDeepAuto extends LinearOpMode {
 
                     )
             );
-            Action trajectoryAction6 = drive.actionBuilder(drive.pose)
+            //Moves into basket then outtakes
+            Action trajectoryAction6 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
                     .waitSeconds(1.25)
                     .lineToX(-23.5)
                     .waitSeconds(1)
                     .build();
-
-            // @formatter:off
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction6,
                             liftArm.lift_arm_outtake_action()
                     )
             );
-            Action trajectoryAction7 = drive.actionBuilder(drive.pose)
-                    .lineToX(-17)
+            //Moves back and lift arm to zero
+            Action trajectoryAction7 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
+                    .lineToX(-14)
                     .build();
-
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction7,
                             liftArm.lift_arm_to_zero_action(startPosition)
                     )
             );
-            Action trajectoryAction8 = drive.actionBuilder(drive.pose)
-                    .strafeTo(new Vector2d(-17,52.5))
+            //Strafes to y position of second sample
+            Action trajectoryAction8 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
+                    .strafeTo(new Vector2d(-14,40))
+                    .build();
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction8,
+                            liftArm.lify_arm_intake_action()
+                    )
+            );
+            //It moves into third sample and lifts it up
+            Action trajectoryAction9 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
+                    .lineToX(-23)
+                    .waitSeconds(0.5)
+//                    .lineToX(-12)
+//                    .strafeTo(new Vector2d(-12,-2))
+//                    .waitSeconds(0.5)
                     .build();
 
             Actions.runBlocking(
                     new SequentialAction(
-                            trajectoryAction8
+                            trajectoryAction9,
+                            liftArm.lift_arm_to_high_basket_action()
                     )
             );
-            Action trajectoryAction9 = drive.actionBuilder(drive.pose)
-                    .lineToX(10)
+            //Waits so high basket can lift
+            Action trajectoryAction10 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
+                    .waitSeconds(0.5)
+//                    .lineToX(-12)
+//                    .strafeTo(new Vector2d(-12,-2))
+//                    .waitSeconds(0.5)
+                    .build();
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction10
+                    )
+            );
+            //Strafes straight to high basket and outtakes
+            Action trajectoryAction11 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
+                    .strafeTo(new Vector2d(-24,-3))
+                    .waitSeconds(0.5)
                     .build();
 
             Actions.runBlocking(
                     new SequentialAction(
-                            trajectoryAction9
+                            trajectoryAction11,
+                            liftArm.lift_arm_outtake_action()
                     )
             );
-
-            Action trajectoryActionEnd = drive.actionBuilder(drive.pose)
+//Moves back and resets arm
+            Action trajectoryAction12 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
+                    .lineToX(-14)
+                    .build();
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction12,
+                            liftArm.lift_arm_to_zero_action(startPosition)
+                    )
+            );
+            //waits 3 second for program to end
+            Action trajectoryActionEnd = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
                     .waitSeconds(3)
                     .build();
-
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryActionEnd
@@ -291,6 +325,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
             Action trajectoryAction8 = drive.actionBuilder(drive.pose)
                     .lineToY(26)
                     .lineToY(30)
+                    .waitSeconds(1)
 //                    .waitSeconds(1)
                     .build();
             // @formatter:on
@@ -302,7 +337,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
                             liftArm.low_rung_action()
                     )
             );
-            Action trajectoryAction9 = drive.actionBuilder(drive.pose)
+            Action trajectoryAction9 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
                     .lineToY(0)
                     .strafeTo(new Vector2d(56, -18))
                     .build();
