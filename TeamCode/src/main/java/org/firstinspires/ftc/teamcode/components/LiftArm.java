@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.components;
 
+import static org.firstinspires.ftc.teamcode.Constants.clip_close;
+import static org.firstinspires.ftc.teamcode.Constants.clip_open;
 import static java.lang.Thread.sleep;
 
 import androidx.annotation.NonNull;
@@ -23,13 +25,14 @@ public class LiftArm {
     private CRServo liftspinservo;
     private Gamepad gamepad1;
     private Telemetry telemetry;
-
+    public Servo clip;
     private Drivetrain drivetrain;
 
     public LiftArm(HardwareMap hardwareMap, Gamepad gp, Telemetry telem, Drivetrain drivetrain) {
         liftMotor = hardwareMap.get(DcMotor.class, "liftMotor");
         liftswingservo = hardwareMap.get(Servo.class, "liftswingservo");
         liftspinservo = hardwareMap.get(CRServo.class, "liftspinservo");
+        clip = hardwareMap.get(Servo.class, "clip");
         gamepad1 = gp;
         telemetry = telem;
         this.drivetrain = drivetrain;
@@ -44,13 +47,43 @@ public class LiftArm {
         }
     }
 
+    public void close_clip() {
+        clip.setPosition(clip_close);
+    }
+
+    public class CloseClip implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+                close_clip();
+            return false;
+        }
+    }
+
+    public Action close_clip_action() {
+        return new CloseClip();
+    }
+
+    public void open_clip() {
+        clip.setPosition(clip_open);
+    }
+    public class OpenClip implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+                open_clip();
+
+            return false;
+        }
+    }
+    public Action open_clip_action() {
+        return new OpenClip();
+    }
     private void lift_arm_move(int target, double power) {
         liftMotor.setTargetPosition((int) target);
         liftMotor.setPower(power);
     }
 
     public void lift_arm_to_high_basket() throws InterruptedException {
-        int target = 3000;
+        int target = 2900;
         double power = 1;
         lift_arm_move((int) target, power);
         sleep(100);
@@ -72,6 +105,12 @@ public class LiftArm {
     }
 
     public void lift_arm_to_zero() throws InterruptedException {
+        double power = 1;
+        int target = 0;
+        lift_arm_move((int) target, power);
+        sleep(100);
+    }
+    public void lift_arm_to_zero_specimen() throws InterruptedException {
         double power = 1;
         int target = 0;
         lift_arm_move((int) target, power);
@@ -119,7 +158,7 @@ public class LiftArm {
         sleep(100);
     }
 
-    public void lift_arm_swing_to_low_basket_and_zero() {
+    public void lift_arm_swing_to_low_basket() {
         liftswingservo.setPosition(Constants.low_basket);
     }
 
@@ -147,28 +186,40 @@ public class LiftArm {
 
     // lift arm to zero
     public class LiftArmToZero implements Action {
-        String startingPosition;
-        public LiftArmToZero(String startingPosition)
+        public LiftArmToZero()
         {
-            this.startingPosition = startingPosition;
         }
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             try {
                 lift_arm_to_zero();
-                if (startingPosition.equals(Constants.SAMPLE_SCORING))
-                {
-                    lift_arm_swing_to_low_basket_and_zero();
-                }
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
             return false;
         }
     }
+    public Action lift_arm_to_zero_action() {
+        return new LiftArmToZero();
+    }
 
-    public Action lift_arm_to_zero_action(String startingPosition) {
-        return new LiftArmToZero(startingPosition);
+    public class LiftArmToZeroAndSwingToLowBasket implements Action {
+        public LiftArmToZeroAndSwingToLowBasket()
+        {
+        }
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            try {
+                lift_arm_to_zero();
+                lift_arm_swing_to_low_basket();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return false;
+        }
+    }
+    public Action lift_arm_to_zero_and_swing_to_low_basket_action() {
+        return new LiftArmToZeroAndSwingToLowBasket();
     }
 
     // intake
@@ -176,11 +227,11 @@ public class LiftArm {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
             liftspinservo.setPower(0.4);
-//            try {
-//                sleep(3000);
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
+            try {
+                sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             return false;
         }
     }

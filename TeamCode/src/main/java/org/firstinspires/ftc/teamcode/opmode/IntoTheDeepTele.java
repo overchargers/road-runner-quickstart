@@ -74,12 +74,12 @@ public class IntoTheDeepTele extends LinearOpMode {
                 }
                 if (gamepad1.y) {
                     liftArm.lift_arm_to_high_basket();
-                    liftArm.lift_arm_swing_to_high_basket();
+//                    liftArm.lift_arm_swing_to_high_basket();
                     driveTrain.setDrivePower(drive_low_power);
                 }
                 if (gamepad1.x) {
                     liftArm.lift_arm_to_low_basket();
-                    liftArm.lift_arm_swing_to_low_basket_and_zero();
+//                    liftArm.lift_arm_swing_to_low_basket_and_zero();
                     driveTrain.setDrivePower(drive_low_power);
                 }
                 if (gamepad1.a) {
@@ -89,7 +89,7 @@ public class IntoTheDeepTele extends LinearOpMode {
                     }
                     liftArm.lift_arm_to_zero();
                     sleep(700);
-                    liftArm.lift_arm_swing_to_low_basket_and_zero();
+//                    liftArm.lift_arm_swing_to_low_basket_and_zero();
                     driveTrain.setDrivePower(drive_high_power);
                 }
                 if (gamepad1.right_bumper) {
