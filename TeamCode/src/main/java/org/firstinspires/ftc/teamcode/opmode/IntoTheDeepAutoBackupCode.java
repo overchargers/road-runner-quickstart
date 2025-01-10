@@ -114,7 +114,7 @@ public class IntoTheDeepAutoBackupCode extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction3,
-                            liftArm.lift_arm_to_zero_action(startPosition)
+                            liftArm.lift_arm_to_zero_action()
                     )
             );
             Action trajectoryAction4 = drive.actionBuilder(drive.pose)
@@ -161,7 +161,7 @@ public class IntoTheDeepAutoBackupCode extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction7,
-                            liftArm.lift_arm_to_zero_action(startPosition)
+                            liftArm.lift_arm_to_zero_action()
                     )
             );
             Action trajectoryAction8 = drive.actionBuilder(drive.pose)
@@ -257,7 +257,7 @@ public class IntoTheDeepAutoBackupCode extends LinearOpMode {
             // @formatter:off
             Actions.runBlocking(
                     new SequentialAction(
-                            liftArm.lift_arm_to_zero_action(startPosition),
+                            liftArm.lift_arm_to_zero_action(),
                             driveTrain.battering_ram_in_action(),
                             trajectoryAction5
 
@@ -313,7 +313,7 @@ public class IntoTheDeepAutoBackupCode extends LinearOpMode {
             // @formatter:off
             Actions.runBlocking(
                     new SequentialAction(
-                            liftArm.lift_arm_to_zero_action(startPosition),
+                            liftArm.lift_arm_to_zero_action(),
                             driveTrain.battering_ram_in_action(),
                             trajectoryAction9
                     )

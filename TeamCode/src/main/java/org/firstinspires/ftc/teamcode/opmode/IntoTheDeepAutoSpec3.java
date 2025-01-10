@@ -106,7 +106,7 @@ public class IntoTheDeepAutoSpec3 extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction3,
-                            liftArm.lift_arm_to_zero_action(startPosition)
+                            liftArm.lift_arm_to_zero_action()
                     )
             );
 
@@ -152,7 +152,7 @@ public class IntoTheDeepAutoSpec3 extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction7,
-                            liftArm.lift_arm_to_zero_action(startPosition)
+                            liftArm.lift_arm_to_zero_action()
                     )
             );
             //Strafes to y position of second sample
@@ -211,7 +211,7 @@ public class IntoTheDeepAutoSpec3 extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction12,
-                            liftArm.lift_arm_to_zero_action(startPosition)
+                            liftArm.lift_arm_to_zero_action()
                     )
             );
             //waits 3 second for program to end
@@ -254,7 +254,7 @@ public class IntoTheDeepAutoSpec3 extends LinearOpMode {
             // @formatter:off
             Actions.runBlocking(
                     new SequentialAction(
-                            liftArm.lift_arm_to_zero_action(startPosition),
+                            liftArm.lift_arm_to_zero_action(),
                             trajectoryAction2,
                             liftArm.open_clip_action()
                     )
@@ -280,7 +280,7 @@ public class IntoTheDeepAutoSpec3 extends LinearOpMode {
             // @formatter:off
             Actions.runBlocking(
                     new SequentialAction(
-                            liftArm.lift_arm_to_zero_action(startPosition),
+                            liftArm.lift_arm_to_zero_action(),
                             driveTrain.battering_ram_in_action(),
                             trajectoryAction3
 

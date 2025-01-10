@@ -83,7 +83,7 @@ public class LiftArm {
     }
 
     public void lift_arm_to_high_basket() throws InterruptedException {
-        int target = 2900;
+        int target = 3150;
         double power = 1;
         lift_arm_move((int) target, power);
         sleep(100);
@@ -228,10 +228,11 @@ public class LiftArm {
         public boolean run(@NonNull TelemetryPacket packet) {
             liftspinservo.setPower(0.4);
             try {
-                sleep(3000);
+                sleep(1000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            liftspinservo.setPower(0.1);
             return false;
         }
     }
