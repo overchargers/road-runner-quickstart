@@ -91,8 +91,8 @@ public class IntoTheDeepAuto extends LinearOpMode {
             // Move forward till over the basket then outtakes sample into basket
             Action trajectoryAction2 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
                     .waitSeconds(1.25)
-                    .lineToX(-22.75)
-                    .waitSeconds(1)
+                    .lineToX(-23.25)
+                    .waitSeconds(1.35)
                     .build();
             Actions.runBlocking(
                     new SequentialAction(
@@ -104,7 +104,6 @@ public class IntoTheDeepAuto extends LinearOpMode {
             //When arm is up, moves back and lowers
             Action trajectoryAction3 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
                     .lineToX(-2)
-                    .waitSeconds(1)
                     .build();
             Actions.runBlocking(
                     new SequentialAction(
@@ -139,8 +138,8 @@ public class IntoTheDeepAuto extends LinearOpMode {
             //Moves into basket then outtakes
             Action trajectoryAction6 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
                     .waitSeconds(1.25)
-                    .lineToX(-22.75)
-                    .waitSeconds(1)
+                    .lineToX(-23.25)
+                    .waitSeconds(1.35)
                     .build();
             Actions.runBlocking(
                     new SequentialAction(
@@ -198,7 +197,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
             //Strafes straight to high basket and outtakes
             Action trajectoryAction11 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
                     .strafeTo(new Vector2d(-24,-3))
-                    .waitSeconds(0.5)
+                    .waitSeconds(1.2)
                     .build();
 
             Actions.runBlocking(
