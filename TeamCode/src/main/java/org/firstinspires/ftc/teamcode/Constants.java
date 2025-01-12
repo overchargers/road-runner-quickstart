@@ -4,7 +4,7 @@ public final class Constants {
     public static final String SAMPLE_SCORING = "SAMPLE-SCORING";
     public static final String SPECIMEN_SCORING = "SPECIMEN-SCORING";
     public static final double backward_drive_power = 0.2;
-    public static final double high_basket = 0.56;
+    public static final double high_basket = 0.61;
     public static final double low_basket = 0.79;
     public static final double drive_low_power = 0.2;
     public static final double drive_high_power = 0.9;

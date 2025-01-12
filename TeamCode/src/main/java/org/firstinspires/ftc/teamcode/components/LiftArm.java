@@ -83,7 +83,7 @@ public class LiftArm {
     }
 
     public void lift_arm_to_high_basket() throws InterruptedException {
-        int target = 3225;
+        int target = 3140;
         double power = 1;
         lift_arm_move((int) target, power);
         sleep(100);
