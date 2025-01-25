@@ -18,5 +18,4 @@ public final class Constants {
     // path profile parameters for sample pickup auto (in inches)
     public static final double maxWheelVel = 80;
     public static final double maxProfileAccel = 50;
-
 }

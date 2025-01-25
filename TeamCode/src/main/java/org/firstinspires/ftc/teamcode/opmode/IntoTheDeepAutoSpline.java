@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
-import static org.firstinspires.ftc.teamcode.Constants.battering_ram_is_out;
-import static org.firstinspires.ftc.teamcode.Constants.clip_open;
-import static org.firstinspires.ftc.teamcode.Constants.drive_low_power;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -19,9 +16,10 @@ import org.firstinspires.ftc.teamcode.components.Drivetrain;
 import org.firstinspires.ftc.teamcode.components.LiftArm;
 import org.firstinspires.ftc.teamcode.components.PickArm;
 import org.firstinspires.ftc.teamcode.components.Status;
+
 @Config
-@Autonomous(name = "IntoTheDeepAuto", group = "Into The Deep")
-public class IntoTheDeepAuto extends LinearOpMode {
+@Autonomous(name = "IntoTheDeepAutoSpline", group = "Into The Deep")
+public class IntoTheDeepAutoSpline extends LinearOpMode {
 
     final private ElapsedTime runtime = new ElapsedTime();
     LiftArm liftArm;
@@ -60,7 +58,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
                 startPosition = Constants.SAMPLE_SCORING;
             }
             if (gamepad1.b) {
-                Pose2d startingPose = new Pose2d(0, 0, -90);
+                Pose2d startingPose = new Pose2d(0, 0, Math.toRadians(-90));
                 drive = new MecanumDrive(hardwareMap, startingPose);
                 startPosition = Constants.SPECIMEN_SCORING;
             }
@@ -241,10 +239,98 @@ public class IntoTheDeepAuto extends LinearOpMode {
         else if (startPosition.equals(Constants.SPECIMEN_SCORING))
         {
             // @formatter:off
-            Action trajectoryAction1 = drive.actionBuilder(drive.pose)
+//            Action trajectoryAction1 = drive.actionBuilder(drive.pose,Constants.maxWheelVel, Constants.maxProfileAccel)
+////                    .strafeTo(new Vector2d(-2, 0))
+////                    .setTangent(Math.toRadians(-90))
+//                    .lineToY(20)
+//                    .build();
+//            // @formatter:on
+//
+//            // @formatter:off
+//            Actions.runBlocking(
+//                    new SequentialAction(
+//                            liftArm.close_clip_action(),
+//                            driveTrain.battering_ram_out_action(),
+//                            liftArm.high_rung_action(),
+//                            trajectoryAction1
+//
+//                    )
+//            );
+//            Action trajectoryAction2 = drive.actionBuilder(drive.pose,Constants.maxWheelVel, Constants.maxProfileAccel)
+//                    .lineToY(25.5)
+//                    .build();
+//            // @formatter:on
+//
+//            // @formatter:off
+//            Actions.runBlocking(
+//                    new SequentialAction(
+//                            trajectoryAction2
+//                    )
+//            );
+//
+//            Action trajectoryAction3 = drive.actionBuilder(drive.pose,Constants.maxWheelVel, Constants.maxProfileAccel)
+//                    .waitSeconds(0.45)
+//                    .build();
+//            // @formatter:on
+//
+//            // @formatter:off
+//            Actions.runBlocking(
+//                    new SequentialAction(
+//                            liftArm.low_rung_action(),
+//                            trajectoryAction3,
+//                            liftArm.open_clip_action()
+//                    )
+//            );
+            // Trying spline to move.
+            // We want to start the bot at x: 10, y: -8, heading: 90 degrees
+
+            Pose2d startingPose = new Pose2d(0, 0, Math.toRadians(-90));
+
+           drive.setPoseEstimate(startingPose);
+//            Action trajectoryAction1 = drive.actionBuilder(drive.pose, Constants.maxWheelVel+20, Constants.maxProfileAccel+30)
+//                    .lineToY(0.01)
+//                    .splineToConstantHeading(new Vector2d(20,30),Math.toRadians(0))
+//                    .build();
+//            // @formatter:on
+//
+//            // @formatter:off
+//            Actions.runBlocking(
+//                    new SequentialAction(
+//                            trajectoryAction1
+//                    )
+//            );
+//
+//            Action trajectoryAction1 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
+//                    .lineToY(27)
+//                    .build();
+//            // @formatter:on
+//
+//            // @formatter:off
+//            Actions.runBlocking(
+//                    new SequentialAction(
+//                            liftArm.close_clip_action(),
+//                            driveTrain.battering_ram_out_action(),
+//                            trajectoryAction1,
+//                            liftArm.high_rung_action()
+//                    )
+//            );
+//            Action trajectoryAction2 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
+//                    .waitSeconds(0.3)
+//                    .build();
+//            // @formatter:on
+//
+//            // @formatter:off
+//            Actions.runBlocking(
+//                    new SequentialAction(
+//                            trajectoryAction2,
+//                            liftArm.lo
+//
+//                            )
+//            );
+            Action trajectoryAction1 = drive.actionBuilder(drive.pose, Constants.maxWheelVel-25, Constants.maxProfileAccel-25)
 //                    .strafeTo(new Vector2d(-2, 0))
 //                    .setTangent(Math.toRadians(-90))
-                    .lineToY(20)
+                    .lineToY(30)
                     .build();
             // @formatter:on
 
@@ -259,31 +345,308 @@ public class IntoTheDeepAuto extends LinearOpMode {
                     )
             );
             Action trajectoryAction2 = drive.actionBuilder(drive.pose)
-                    .lineToY(25.5)
+                    .waitSeconds(0.1)
                     .build();
             // @formatter:on
 
             // @formatter:off
             Actions.runBlocking(
                     new SequentialAction(
-                            trajectoryAction2
+                            liftArm.lift_arm_to_zero_action(),
+                            trajectoryAction2,
+                            liftArm.open_clip_action(),
+                            driveTrain.battering_ram_in_action()
                     )
             );
+            Action trajectoryAction3 = drive.actionBuilder(drive.pose, Constants.maxWheelVel+40, Constants.maxProfileAccel+50)
+                   .splineToConstantHeading(new Vector2d(27,20),Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(41,47),Math.toRadians(0))
+                    .waitSeconds(0.0001)
+                    .splineToConstantHeading(new Vector2d(37,10),Math.toRadians(0))
+                    .splineToConstantHeading(new Vector2d(57,44),Math.toRadians(0))
+                    .waitSeconds(0.0001)
+//                    .splineToConstantHeading(new Vector2d(44,9),Math.toRadians(0))
 
-            Action trajectoryAction3 = drive.actionBuilder(drive.pose)
-                    .waitSeconds(0.45)
+
+//                    .splineToConstantHeading(new Vector2d(42,0),Math.toRadians(0))
+                    .build();
+            // @formatter:on
+
+////            // @formatter:off
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction3
+
+                   )
+                      );
+            Action trajectoryAction3a = drive.actionBuilder(drive.pose, Constants.maxWheelVel+40, Constants.maxProfileAccel+50)
+                    .lineToY(9)
+                    .turn(Math.toRadians(186))
+
+
+//                    .splineToConstantHeading(new Vector2d(42,0),Math.toRadians(0))
+                    .build();
+            // @formatter:on
+
+////            // @formatter:off
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction3a
+
+                    )
+            );
+            Action trajectoryAction4 = drive.actionBuilder(drive.pose, Constants.maxWheelVel+20, Constants.maxProfileAccel+30)
+                    .lineToY(-1)
                     .build();
             // @formatter:on
 
             // @formatter:off
             Actions.runBlocking(
                     new SequentialAction(
-                            liftArm.low_rung_action(),
-                            trajectoryAction3,
-                            liftArm.open_clip_action()
+                            trajectoryAction4,
+                            liftArm.close_clip_action()
+
                     )
             );
-            Action trajectoryAction4 = drive.actionBuilder(drive.pose)
+            Action trajectoryAction5 = drive.actionBuilder(drive.pose)
+                    .waitSeconds(0.2)
+                    .build();
+            // @formatter:on
+
+            // @formatter:off
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction5,
+                            liftArm.high_rung_action(),
+                            driveTrain.battering_ram_out_action()
+
+                    )
+            );
+
+            Action trajectoryAction6 = drive.actionBuilder(drive.pose, Constants.maxWheelVel-15, Constants.maxProfileAccel-15)
+                    .splineToLinearHeading(new Pose2d(0, 27.5, Math.toRadians(-88)), Math.toRadians(0))
+                    .turn(Math.toRadians(2.3))
+                    .build();
+            // @formatter:on
+
+            // @formatter:off
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction6,
+                            liftArm.lift_arm_to_zero_action()
+
+                    )
+            );
+
+//            Action trajectoryAction7 = drive.actionBuilder(drive.pose, Constants.maxWheelVel-15, Constants.maxProfileAccel-15)
+//                    .splineToLinearHeading(new Pose2d(-2, 28, Math.toRadians(-97)), Math.toRadians(0))
+////                    .turn(Math.toRadians(-90))
+//                    .build();
+//            // @formatter:on
+//
+//            // @formatter:off
+//            Actions.runBlocking(
+//                    new SequentialAction(
+//                            trajectoryAction7,
+////
+//                    )
+//            );
+//            Action trajectoryAction7 = drive.actionBuilder(drive.pose, Constants.maxWheelVel+20, Constants.maxProfileAccel+30)
+//                    .splineToSplineHeading(new Pose2d(-2, 28, Math.toRadians(90)), Math.toRadians(90))
+////                    .turn(Math.toRadians(-90))
+//                    .build();
+//            // @formatter:on
+//
+//            // @formatter:off
+//            Actions.runBlocking(
+//                    new SequentialAction(
+//                            trajectoryAction7,
+//                            liftArm.lift_arm_to_zero_action()
+//
+//
+//                    )
+//            );
+            Action trajectoryAction8 = drive.actionBuilder(drive.pose)
+                    .waitSeconds(0.1)
+                    .build();
+            // @formatter:on
+
+            // @formatter:off
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction8,
+                            liftArm.open_clip_action(),
+                            driveTrain.battering_ram_in_action()
+
+                    )
+            );
+            Action trajectoryAction9 = drive.actionBuilder(drive.pose, Constants.maxWheelVel+20, Constants.maxProfileAccel+30)
+//                    .splineToLinearHeading(new Pose2d(25,20,Math.toRadians(0)),Math.toRadians(90))
+                    .splineToLinearHeading(new Pose2d(27,9,Math.toRadians(95)),Math.toRadians(90))
+                    .build();
+            // @formatter:on
+
+            // @formatter:off
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction9
+
+
+                    )
+            );
+            Action trajectoryAction10 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel+10)
+                    .lineToY(-1)
+                    .build();
+            // @formatter:on
+
+            // @formatter:off
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction10,
+                            liftArm.close_clip_action()
+
+                    )
+            );
+            Action trajectoryAction11 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel+10)
+                    .waitSeconds(0.2)
+                    .build();
+            // @formatter:on
+
+            // @formatter:off
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction11,
+                            liftArm.high_rung_action()
+
+                    )
+            );
+            Action trajectoryAction12 = drive.actionBuilder(drive.pose, Constants.maxWheelVel+20, Constants.maxProfileAccel+30)
+//                    .splineToLinearHeading(new Pose2d(8,20,Math.toRadians(0)),Math.toRadians(90))
+                    .build();
+            // @formatter:on
+
+            // @formatter:off
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction12,
+                            driveTrain.battering_ram_out_action()
+
+                    )
+            );
+            Action trajectoryAction13 = drive.actionBuilder(drive.pose, Constants.maxWheelVel-15, Constants.maxProfileAccel-15)
+                    .splineToLinearHeading(new Pose2d(-3.5,28,Math.toRadians(-88)),Math.toRadians(90))
+                    .turn(Math.toRadians(3.2))
+                    .build();
+            // @formatter:on
+
+            // @formatter:off
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction13,
+                            liftArm.lift_arm_to_zero_action()
+
+                    )
+            );
+            Action trajectoryAction14 = drive.actionBuilder(drive.pose)
+                    .waitSeconds(0.1)
+                    .build();
+            // @formatter:on
+
+            // @formatter:off
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction14,
+                            liftArm.open_clip_action(),
+                            driveTrain.battering_ram_in_action()
+
+                    )
+            );
+            Action trajectoryAction15 = drive.actionBuilder(drive.pose, Constants.maxWheelVel+20, Constants.maxProfileAccel+30)
+//                    .splineToLinearHeading(new Pose2d(25,20,Math.toRadians(0)),Math.toRadians(90))
+                    .splineToLinearHeading(new Pose2d(27,9,Math.toRadians(95)),Math.toRadians(90))
+                    .build();
+            // @formatter:on
+
+            // @formatter:off
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction15
+
+
+                    )
+            );
+            Action trajectoryAction16 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel+10)
+                    .lineToY(-1)
+                    .build();
+            // @formatter:on
+
+            // @formatter:off
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction16,
+                            liftArm.close_clip_action()
+
+                    )
+            );
+            Action trajectoryAction17 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel+10)
+                    .waitSeconds(0.2)
+                    .build();
+            // @formatter:on
+
+            // @formatter:off
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction17,
+                            liftArm.high_rung_action()
+
+                    )
+            );
+            Action trajectoryAction18 = drive.actionBuilder(drive.pose, Constants.maxWheelVel+20, Constants.maxProfileAccel+30)
+//                    .splineToLinearHeading(new Pose2d(8,20,Math.toRadians(0)),Math.toRadians(90))
+                    .build();
+            // @formatter:on
+
+            // @formatter:off
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction18,
+                            driveTrain.battering_ram_out_action()
+
+                    )
+            );
+            Action trajectoryAction19 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
+                    .splineToLinearHeading(new Pose2d(-7,28,Math.toRadians(-88)),Math.toRadians(90))
+                    .turn(Math.toRadians(3.1))
+                    .build();
+            // @formatter:on
+
+            // @formatter:off
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction19,
+                            liftArm.lift_arm_to_zero_action()
+
+                    )
+            );
+            Action trajectoryAction20 = drive.actionBuilder(drive.pose)
+                    .waitSeconds(0.1)
+                    .build();
+            // @formatter:on
+
+            // @formatter:off
+            Actions.runBlocking(
+                    new SequentialAction(
+                            trajectoryAction20,
+                            liftArm.open_clip_action(),
+                            driveTrain.battering_ram_in_action()
+
+                    )
+            );
+
+
+
+         /*
+            Action trajectoryAction4 = drive.actionBuilder(drive.pose,Constants.maxWheelVel, Constants.maxProfileAccel)
                     .waitSeconds(0.5)
                     .lineToY(5)
                     .turn(Math.toRadians(195))
@@ -310,7 +673,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
 
                     )
             );
-            Action trajectoryAction6 = drive.actionBuilder(drive.pose)
+            Action trajectoryAction6 = drive.actionBuilder(drive.pose,Constants.maxWheelVel, Constants.maxProfileAccel)
                     .lineToY(-25.5)
                     .waitSeconds(0.4)
                     .build();
@@ -323,7 +686,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
                             liftArm.close_clip_action()
                     )
             );
-            Action trajectoryAction7 = drive.actionBuilder(drive.pose)
+            Action trajectoryAction7 = drive.actionBuilder(drive.pose,Constants.maxWheelVel, Constants.maxProfileAccel)
                     .waitSeconds(0.3)
                     .build();
             // @formatter:on
@@ -350,7 +713,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
                             driveTrain.battering_ram_out_action()
                     )
             );
-            Action trajectoryAction9 = drive.actionBuilder(drive.pose)
+            Action trajectoryAction9 = drive.actionBuilder(drive.pose,Constants.maxWheelVel, Constants.maxProfileAccel)
                     .lineToY(26)
                     .lineToY(30)
                     .waitSeconds(1)
@@ -365,7 +728,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
                             liftArm.low_rung_action()
                     )
             );
-            Action trajectoryAction10 = drive.actionBuilder(drive.pose)
+            Action trajectoryAction10 = drive.actionBuilder(drive.pose,Constants.maxWheelVel, Constants.maxProfileAccel)
                     .waitSeconds(.45)
                     .build();
             // @formatter:on
@@ -418,8 +781,8 @@ public class IntoTheDeepAuto extends LinearOpMode {
 //                            trajectoryAction9
 //                    )
 //            );
-
-            Action trajectoryActionEnd = drive.actionBuilder(drive.pose)
+*/
+            Action trajectoryActionEnd = drive.actionBuilder(drive.pose,Constants.maxWheelVel, Constants.maxProfileAccel)
                     .waitSeconds(3)
                     .build();
 
