@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -21,6 +22,7 @@ import org.firstinspires.ftc.teamcode.components.PickArm;
 import org.firstinspires.ftc.teamcode.components.Status;
 @Config
 @Autonomous(name = "IntoTheDeepAuto", group = "Into The Deep")
+@Disabled
 public class IntoTheDeepAuto extends LinearOpMode {
 
     final private ElapsedTime runtime = new ElapsedTime();

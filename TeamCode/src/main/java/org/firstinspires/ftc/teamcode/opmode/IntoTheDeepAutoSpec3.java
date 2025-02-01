@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.components.Status;
 
 @Config
 @Autonomous(name = "IntoTheDeepAutoSpec3", group = "Into The Deep")
+@Disabled
 public class IntoTheDeepAutoSpec3 extends LinearOpMode {
 
     final private ElapsedTime runtime = new ElapsedTime();
