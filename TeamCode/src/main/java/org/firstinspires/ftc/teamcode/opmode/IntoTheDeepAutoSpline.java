@@ -77,9 +77,9 @@ public class IntoTheDeepAutoSpline extends LinearOpMode {
         {
 
             //Moves forward and raises liftarm for first sample from home
-            Action trajectoryAction1 = drive.actionBuilder(drive.pose, Constants.maxWheelVel-40, Constants.maxProfileAccel-40)
+            Action trajectoryAction1 = drive.actionBuilder(drive.pose, Constants.maxWheelVel-43, Constants.maxProfileAccel-43)
                     .waitSeconds(0.5)
-                    .strafeToLinearHeading((new Vector2d(6,19)),(Math.toRadians(-45)))
+                    .strafeToLinearHeading((new Vector2d(6,18.5)),(Math.toRadians(-45)))
                     .build();
             Actions.runBlocking(
                     new SequentialAction(
@@ -93,15 +93,15 @@ public class IntoTheDeepAutoSpline extends LinearOpMode {
 
             //When arm is up, moves back and lowers
             Action trajectoryAction3 = drive.actionBuilder(drive.pose, Constants.maxWheelVel+25, Constants.maxProfileAccel+25)
-                    .splineToLinearHeading(new Pose2d(20, -5, Math.toRadians(-90)), Math.toRadians(-90))
+                    .splineToLinearHeading(new Pose2d(10, -5, Math.toRadians(-90)), Math.toRadians(-90))
                     .build();
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction3
                     )
             );
-            Action trajectoryAction4 = drive.actionBuilder(drive.pose, Constants.maxWheelVel+10, Constants.maxProfileAccel+10)
-                    .strafeTo(new Vector2d(38,-5))
+            Action trajectoryAction4 = drive.actionBuilder(drive.pose, Constants.maxWheelVel+25, Constants.maxProfileAccel+25)
+                    .strafeTo(new Vector2d(40,-5))
                     .build();
             Actions.runBlocking(
                     new SequentialAction(
@@ -121,9 +121,9 @@ public class IntoTheDeepAutoSpline extends LinearOpMode {
                             liftArm.lift_arm_to_high_basket_action()
                     )
             );
-            Action trajectoryAction6 = drive.actionBuilder(drive.pose, Constants.maxWheelVel-35, Constants.maxProfileAccel-35)
+            Action trajectoryAction6 = drive.actionBuilder(drive.pose, Constants.maxWheelVel-40, Constants.maxProfileAccel-40)
 
-                    .strafeToLinearHeading((new Vector2d(5,18)),(Math.toRadians(-45)))
+                    .strafeToLinearHeading((new Vector2d(5,17.6)),(Math.toRadians(-45)))
                     .build();
             Actions.runBlocking(
                     new SequentialAction(
@@ -133,7 +133,7 @@ public class IntoTheDeepAutoSpline extends LinearOpMode {
                     )
             );
             Action trajectoryAction7 = drive.actionBuilder(drive.pose, Constants.maxWheelVel+10, Constants.maxProfileAccel+10)
-                    .splineToLinearHeading(new Pose2d(8, -4, Math.toRadians(-95)), Math.toRadians(-90))
+                    .splineToLinearHeading(new Pose2d(4, -4, Math.toRadians(-95)), Math.toRadians(-90))
                     .build();
             Actions.runBlocking(
                     new SequentialAction(
@@ -142,8 +142,8 @@ public class IntoTheDeepAutoSpline extends LinearOpMode {
                             liftArm.lift_arm_to_zero_and_swing_to_low_basket_action()
                     )
             );
-            Action trajectoryAction8 = drive.actionBuilder(drive.pose, Constants.maxWheelVel+10, Constants.maxProfileAccel+10)
-                    .strafeTo(new Vector2d(39.5,6))
+            Action trajectoryAction8 = drive.actionBuilder(drive.pose, Constants.maxWheelVel+30, Constants.maxProfileAccel+30)
+                    .strafeTo(new Vector2d(39,6))
                     .build();
             Actions.runBlocking(
                     new SequentialAction(
@@ -162,8 +162,8 @@ public class IntoTheDeepAutoSpline extends LinearOpMode {
                             liftArm.lift_arm_to_high_basket_action()
                     )
             );
-            Action trajectoryAction10 = drive.actionBuilder(drive.pose, Constants.maxWheelVel-36, Constants.maxProfileAccel-36)
-                    .strafeToLinearHeading((new Vector2d(5,18)),(Math.toRadians(-45)))
+            Action trajectoryAction10 = drive.actionBuilder(drive.pose, Constants.maxWheelVel-40, Constants.maxProfileAccel-40)
+                    .strafeToLinearHeading((new Vector2d(5,17.7)),(Math.toRadians(-45)))
                     .build();
             Actions.runBlocking(
                     new SequentialAction(
@@ -173,7 +173,7 @@ public class IntoTheDeepAutoSpline extends LinearOpMode {
                     )
             );
             Action trajectoryAction11 = drive.actionBuilder(drive.pose, Constants.maxWheelVel+10, Constants.maxProfileAccel+10)
-                    .splineToLinearHeading(new Pose2d(4, 5, Math.toRadians(-110)), Math.toRadians(-90))
+                    .splineToLinearHeading(new Pose2d(2, 5, Math.toRadians(-110)), Math.toRadians(-90))
                     .build();
             Actions.runBlocking(
                     new SequentialAction(
@@ -182,8 +182,8 @@ public class IntoTheDeepAutoSpline extends LinearOpMode {
                             liftArm.lift_arm_to_zero_and_swing_to_low_basket_action()
                     )
             );
-            Action trajectoryAction12 = drive.actionBuilder(drive.pose, Constants.maxWheelVel+10, Constants.maxProfileAccel+10)
-                    .strafeTo(new Vector2d(38.2,5))
+            Action trajectoryAction12 = drive.actionBuilder(drive.pose, Constants.maxWheelVel+30, Constants.maxProfileAccel+30)
+                    .strafeTo(new Vector2d(40,5))
                     .build();
             Actions.runBlocking(
                     new SequentialAction(
@@ -192,7 +192,7 @@ public class IntoTheDeepAutoSpline extends LinearOpMode {
                     )
             );
             Action trajectoryAction13 = drive.actionBuilder(drive.pose, Constants.maxWheelVel-15, Constants.maxProfileAccel-15)
-                    .lineToY(18)
+                    .lineToY(19)
                     .waitSeconds(0.75)
                     .build();
             Actions.runBlocking(
@@ -203,7 +203,7 @@ public class IntoTheDeepAutoSpline extends LinearOpMode {
                     )
             );
             Action trajectoryAction14 = drive.actionBuilder(drive.pose, Constants.maxWheelVel-40, Constants.maxProfileAccel-40)
-                    .strafeToLinearHeading((new Vector2d(5,18)),(Math.toRadians(-45)))
+                    .strafeToLinearHeading((new Vector2d(5,17.7)),(Math.toRadians(-45)))
                     .build();
             Actions.runBlocking(
                     new SequentialAction(
@@ -212,8 +212,9 @@ public class IntoTheDeepAutoSpline extends LinearOpMode {
                             liftArm.lift_arm_outtake_action()
                     )
             );
-            Action trajectoryAction15 = drive.actionBuilder(drive.pose, Constants.maxWheelVel+30, Constants.maxProfileAccel+30)
-                    .splineToConstantHeading(new Vector2d(27,20),Math.toRadians(-90))
+            Action trajectoryAction15 = drive.actionBuilder(drive.pose, Constants.maxWheelVel+35, Constants.maxProfileAccel+35)
+//                    .splineToConstantHeading(new Vector2d(27,20),Math.toRadians(-90))
+                    .strafeToLinearHeading((new Vector2d(8,15)),(Math.toRadians(-45)))
                     .build();
             Actions.runBlocking(
                     new SequentialAction(

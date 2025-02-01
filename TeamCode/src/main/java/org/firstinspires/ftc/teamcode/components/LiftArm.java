@@ -247,7 +247,7 @@ public class LiftArm {
         public boolean run(@NonNull TelemetryPacket packet) {
             liftspinservo.setPower(-0.5);
             try {
-                sleep(750);
+                sleep(250);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
