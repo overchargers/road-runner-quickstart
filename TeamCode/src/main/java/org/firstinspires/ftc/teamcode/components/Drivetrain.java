@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.components;
 
 
-import static java.lang.Thread.sleep;
-
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -13,92 +11,107 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 
-public class Drivetrain {
-    MecanumDrive drive;
-    Gamepad gamepad1;
-    double drivePower;
-    boolean direction_is_reverse;
-    private Servo batteringramservo;
+public class Drivetrain
+{
+    private MecanumDrive drive;
+    private Gamepad gamepad;
+    private double drivePower;
+    private boolean directionIsReverse;
+    private Servo batteringRamServo;
+    private Telemetry telemetry;
 
-    public Drivetrain(HardwareMap hardwareMap, Gamepad gp, MecanumDrive md){
-        gamepad1 = gp;
-        drive = md;
-        batteringramservo = hardwareMap.get(Servo.class, "batteringramservo");
+    public Drivetrain(HardwareMap hardwareMap, Gamepad gamepad, MecanumDrive drive, Telemetry telemetry)
+    {
+        this.gamepad = gamepad;
+        this.drive = drive;
+        this.telemetry = telemetry;
+        batteringRamServo = hardwareMap.get(Servo.class, Constants.BATTERING_RAM_SERVO_NAME);
     }
-    public void drive_motor(){
+
+    public void addTelemetryData()
+    {
+        telemetry.addData("FrontRight Power", drive.rightFront.getPower());
+        telemetry.addData("BackRight Power", drive.rightBack.getPower());
+        telemetry.addData("FrontLeft Power", drive.leftFront.getPower());
+        telemetry.addData("BackLeft Power", drive.leftBack.getPower());
+        telemetry.addData("MotorDirection Reverse", directionIsReverse);
+    }
+
+    public void driveMotor()
+    {
         int reverse_turn;
 
-        if (direction_is_reverse) {
+        if (directionIsReverse)
+        {
             reverse_turn = -1;
-        } else {
+        }
+        else
+        {
             reverse_turn = 1;
         }
 
         // Drive by gamepad
-        drive.setDrivePowers(new PoseVelocity2d(
-                new Vector2d(
-            -gamepad1.left_stick_y,
-                        -gamepad1.left_stick_x
-                ),
-                -gamepad1.right_stick_x
-        ));
+        drive.setDrivePowers(
+                new PoseVelocity2d(new Vector2d(-gamepad.left_stick_y, -gamepad.left_stick_x), -gamepad.right_stick_x));
         drive.updatePoseEstimate();
 
-    // Display telemetry on the driver hub
+        // Display telemetry on the driver hub
         /*
-        telemetry.addData("x", drive.pose.position.x);
-        telemetry.addData("y", drive.pose.position.y);
-        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
-        telemetry.update();
+         * telemetry.addData("x", drive.pose.position.x); telemetry.addData("y", drive.pose.position.y);
+         * telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
+         * telemetry.update();
          */
 
     }
-    public void setDrivePower(double drivePower){
+
+    public void setDrivePower(double drivePower)
+    {
         this.drivePower = drivePower;
     }
-    public void reverse_drive_direction() {
-        direction_is_reverse = !direction_is_reverse;
-    }
-    /**
-     * Describe this function...
-     */
-    public void battering_ram_in() {
-        batteringramservo.setPosition(Constants.battering_ram_is_in);
+
+    public void reverseDriveDirection()
+    {
+        directionIsReverse = !directionIsReverse;
     }
 
-    //
-    public class BatteringRamIn implements Action {
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            battering_ram_in ();
-            return false;
-        }
-    }
-    public Action battering_ram_in_action()
+    public void batteringRamIn()
     {
-        return new BatteringRamIn();
+        batteringRamServo.setPosition(Constants.BATTERING_RAM_IN);
     }
 
-    /**
-     * Describe this function...
-     */
-    private void battering_ram_out() {
-        batteringramservo.setPosition(Constants.battering_ram_is_out);
-    }
-    //
-    public class BatteringRamOut implements Action {
-        @Override
-        public boolean run(@NonNull TelemetryPacket packet) {
-            battering_ram_out();
-            return false;
-        }
-    }
-    public Action battering_ram_out_action()
+    public Action batteringRamInAction()
     {
-        return new BatteringRamOut();
+        return new Action()
+        {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet)
+            {
+                batteringRamIn();
+                return false;
+            }
+        };
+    }
+
+    private void batteringRamOut()
+    {
+        batteringRamServo.setPosition(Constants.BATTERING_RAM_OUT);
+    }
+
+    public Action batteringRamOutAction()
+    {
+        return new Action()
+        {
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet)
+            {
+                batteringRamOut();
+                return false;
+            }
+        };
     }
 
 }

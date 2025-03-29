@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
-import static org.firstinspires.ftc.teamcode.Constants.battering_ram_is_out;
-import static org.firstinspires.ftc.teamcode.Constants.clip_open;
-import static org.firstinspires.ftc.teamcode.Constants.drive_low_power;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -37,16 +34,16 @@ public class IntoTheDeepAuto extends LinearOpMode {
         // sample starting pose
 //        Pose2d startingPose = new Pose2d(0, 0, 0);
         // specimen starting pose
-        driveTrain = new Drivetrain(hardwareMap, gamepad1, drive);
+        driveTrain = new Drivetrain(hardwareMap, gamepad1, drive, telemetry);
         pickArm = new PickArm(hardwareMap,gamepad1,telemetry, driveTrain);
         liftArm = new LiftArm(hardwareMap,gamepad1,telemetry, driveTrain );
         status = new Status(telemetry, driveTrain, drive, pickArm, liftArm);
 
         //------------------------------------------------------------------------------------------
         // INITIALIZE ROBOT
-        pickArm.init_pick_arm();
-        liftArm.init_lift_arm();
-        driveTrain.battering_ram_in();
+        pickArm.initPickArm();
+        liftArm.initLiftArm();
+        driveTrain.batteringRamIn();
 
         // Actions that need to happen on init; for instance, a claw tightening
 //        Actions.runBlocking(claw.closeClaw());
@@ -84,7 +81,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
                     .build();
             Actions.runBlocking(
                     new SequentialAction(
-                            liftArm.lift_arm_to_high_basket_action(),
+                            liftArm.liftArmToHighBasketAction(),
                             trajectoryAction1
                     )
             );
@@ -98,7 +95,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction2,
-                            liftArm.lift_arm_outtake_action()
+                            liftArm.liftArmOuttakeAction()
                     )
             );
 
@@ -109,7 +106,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction3,
-                            liftArm.lift_arm_to_zero_and_swing_to_low_basket_action()
+                            liftArm.liftArmToZeroAndSwingToLowBasketAction()
                     )
             );
 
@@ -120,7 +117,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction4,
-                            liftArm.lify_arm_intake_action()
+                            liftArm.lifyArmIntakeAction()
                     )
             );
             //Moves forward into sample then strafes back to starting position and lifts basket
@@ -131,7 +128,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction5,
-                            liftArm.lift_arm_to_high_basket_action()
+                            liftArm.liftArmToHighBasketAction()
 
 
                     )
@@ -156,7 +153,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction7,
-                            liftArm.lift_arm_outtake_action()
+                            liftArm.liftArmOuttakeAction()
                     )
             );
             //Moves back and lift arm to zero
@@ -166,7 +163,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction8,
-                            liftArm.lift_arm_to_zero_and_swing_to_low_basket_action()
+                            liftArm.liftArmToZeroAndSwingToLowBasketAction()
                     )
             );
             //Strafes to y position of second sample
@@ -177,7 +174,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction9,
-                            liftArm.lify_arm_intake_action()
+                            liftArm.lifyArmIntakeAction()
                     )
             );
             //It moves into third sample and lifts it up
@@ -192,7 +189,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction10,
-                            liftArm.lift_arm_to_high_basket_action()
+                            liftArm.liftArmToHighBasketAction()
                     )
             );
             //Waits so high basket can lift
@@ -216,7 +213,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction12,
-                            liftArm.lift_arm_outtake_action()
+                            liftArm.liftArmOuttakeAction()
                     )
             );
 //Moves back and resets arm
@@ -227,7 +224,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction13,
-                            liftArm.lift_arm_to_zero_and_swing_to_low_basket_action()
+                            liftArm.liftArmToZeroAndSwingToLowBasketAction()
                     )
             );
             //waits 3 second for program to end
@@ -253,9 +250,9 @@ public class IntoTheDeepAuto extends LinearOpMode {
             // @formatter:off
             Actions.runBlocking(
                     new SequentialAction(
-                            liftArm.close_clip_action(),
-                            driveTrain.battering_ram_out_action(),
-                            liftArm.high_rung_action(),
+                            liftArm.closeClipAction(),
+                            driveTrain.batteringRamOutAction(),
+                            liftArm.highRungAction(),
                             trajectoryAction1
 
                     )
@@ -280,9 +277,9 @@ public class IntoTheDeepAuto extends LinearOpMode {
             // @formatter:off
             Actions.runBlocking(
                     new SequentialAction(
-                            liftArm.low_rung_action(),
+                            liftArm.lowRungAction(),
                             trajectoryAction3,
-                            liftArm.open_clip_action()
+                            liftArm.openClipAction()
                     )
             );
             Action trajectoryAction4 = drive.actionBuilder(drive.pose)
@@ -306,8 +303,8 @@ public class IntoTheDeepAuto extends LinearOpMode {
             // @formatter:off
             Actions.runBlocking(
                     new SequentialAction(
-                            liftArm.lift_arm_to_zero_action(),
-                            driveTrain.battering_ram_in_action(),
+                            liftArm.liftArmToZeroAction(),
+                            driveTrain.batteringRamInAction(),
                             trajectoryAction5
 
                     )
@@ -322,7 +319,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction6,
-                            liftArm.close_clip_action()
+                            liftArm.closeClipAction()
                     )
             );
             Action trajectoryAction7 = drive.actionBuilder(drive.pose)
@@ -334,7 +331,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction7,
-                            liftArm.high_rung_action()
+                            liftArm.highRungAction()
                     )
             );
             Action trajectoryAction8 = drive.actionBuilder(drive.pose, Constants.maxWheelVel, Constants.maxProfileAccel)
@@ -349,7 +346,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction8,
-                            driveTrain.battering_ram_out_action()
+                            driveTrain.batteringRamOutAction()
                     )
             );
             Action trajectoryAction9 = drive.actionBuilder(drive.pose)
@@ -364,7 +361,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction9,
-                            liftArm.low_rung_action()
+                            liftArm.lowRungAction()
                     )
             );
             Action trajectoryAction10 = drive.actionBuilder(drive.pose)
@@ -376,7 +373,7 @@ public class IntoTheDeepAuto extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             trajectoryAction10,
-                            liftArm.open_clip_action()
+                            liftArm.openClipAction()
                     )
             );
 
@@ -398,8 +395,8 @@ public class IntoTheDeepAuto extends LinearOpMode {
             // @formatter:off
             Actions.runBlocking(
                     new SequentialAction(
-                            liftArm.lift_arm_to_zero_action(),
-                            driveTrain.battering_ram_in_action(),
+                            liftArm.liftArmToZeroAction(),
+                            driveTrain.batteringRamInAction(),
                             trajectoryAction11
 
 
